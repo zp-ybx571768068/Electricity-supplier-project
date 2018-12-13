@@ -16,7 +16,7 @@ app.service("brandService",function ($http) {
 
     //根据主键查询
     this.findOne = function (id) {
-        $http.get("../brand/findOne.do?id=" + id);
+        return $http.get("../brand/findOne.do?id=" + id);
     };
 
     //删除

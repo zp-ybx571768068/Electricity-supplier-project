@@ -46,7 +46,7 @@ app.controller("brandController",function ($scope,$http,$controller, brandServic
         });
     };
 
-    $scope.findOne = function (){
+    $scope.findOne = function (id){
         brandService.findOne(id).success(function (response) {
             $scope.entity = response;
         })
