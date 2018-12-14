@@ -14,6 +14,7 @@ import tk.mybatis.mapper.util.StringUtil;
 
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zp
@@ -64,5 +65,10 @@ public class BrandServiceImpl extends BaseServiceImpl<TbBrand> implements BrandS
         List<TbBrand> list = brandMapper.selectByExample(example);
         PageInfo<TbBrand> pageInfo = new PageInfo<>(list);
         return new PageResult(pageInfo.getTotal(),pageInfo.getList());
+    }
+
+    @Override
+    public List<Map<String, Object>> selectOptionList() {
+       return brandMapper.selectOptionList();
     }
 }

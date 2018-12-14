@@ -8,6 +8,7 @@ import com.pinyougou.vo.Result;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zp
@@ -19,6 +20,11 @@ public class BrandController {
     @Reference
     private BrandService brandService;
 
+
+    @GetMapping("/selectOptionList")
+    public List<Map<String,Object>> selectOptionList(){
+        return brandService.selectOptionList();
+    }
 
     @PostMapping("/search")
     public PageResult search(@RequestBody TbBrand brand,@RequestParam(defaultValue = "1") Integer page,

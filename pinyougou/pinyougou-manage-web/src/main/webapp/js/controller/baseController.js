@@ -20,18 +20,32 @@ app.controller("baseController",function ($scope) {
     };
 
     //定义一个放置选择了 id 的数组
-    $scope.selectIds = [];
+    $scope.selectedIds = [];
 
     //复选框的点击事件
     $scope.updateSelection = function ($event,id) {
         if ($event.target.checked){
             //将选中的选项id添加至数组中
-            $scope.selectIds.push(id);
+            $scope.selectedIds.push(id);
         }else {
             //反选则从id数组中删除
-            var index = $scope.selectIds.indexOf(id);
+            var index = $scope.selectedIds.indexOf(id);
             //删除指定位置的id
-            $scope.selectIds.splice(index,1);
+            $scope.selectedIds.splice(index,1);
         }
+    };
+
+    $scope.jsonToString = function (jsonStr,key) {
+
+        var str = "";
+        var jsonArray = JSON.parse(jsonStr);
+        for (var i = 0; i < jsonArray.length; i++){
+            if (i > 0) {
+                str +=",";
+            }
+            str += jsonArray[i][key];
+        }
+        return str;
+
     };
 });
