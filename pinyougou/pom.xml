@@ -14,9 +14,8 @@
         <module>pinyougou-sellergoods</module>
         <module>pinyougou-dao</module>
         <module>pinyougou-manage-web</module>
-        <module>../pinyougou-show-web</module>
+        <module>pinyougou-shop-web</module>
     </modules>
-
     <!-- 集中定义依赖版本号 -->
     <properties>
         <junit.version>4.12</junit.version>
