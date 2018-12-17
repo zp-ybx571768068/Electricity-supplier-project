@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:c="http://www.w3.org/1999/XSL/Transform">
 
 <head>
     <!-- 页面meta -->
@@ -38,7 +38,8 @@
                     </div>
 
                     <div class="box-body">
-                  			 <ol class="breadcrumb">	                        	
+                  			 <ol class="breadcrumb">
+								 {{entity}}
                         		<li>
 		                        	<a href="#" ng-click="selectList(1,{'id':0})" >顶级分类列表</a>
 		                        </li>
@@ -57,7 +58,7 @@
                             <div class="pull-left">
                                 <div class="form-group form-inline">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-default" title="新建" data-toggle="modal" data-target="#editModal" ><i class="fa fa-file-o"></i> 新建</button>
+                                        <button type="button" class="btn btn-default" title="新建" ng-click="" data-toggle="modal" data-target="#editModal" ><i class="fa fa-file-o"></i> 新建</button>
                                         <button type="button" class="btn btn-default" title="删除" ><i class="fa fa-trash-o"></i> 删除</button>
                                         <button type="button" class="btn btn-default" title="刷新" ><i class="fa fa-check"></i> 刷新</button>
                                        
@@ -121,7 +122,7 @@
 				<tr>
 		      		<td>上级商品分类</td>
 		      		<td>
-		      		   珠宝 >>  银饰
+		      		   {{entity_1.name}} >> {{entity_2.name}}
 		      		</td>
 		      	</tr>
 		      	<tr>

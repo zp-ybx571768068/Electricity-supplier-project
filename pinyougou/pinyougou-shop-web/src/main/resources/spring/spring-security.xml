@@ -4,10 +4,11 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
-http://www.springframework.org/schema/beans/spring-beans.xsd
-http://www.springframework.org/schema/security
-http://www.springframework.org/schema/security/spring-security.xsd
-http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+             http://www.springframework.org/schema/beans/spring-beans.xsd
+             http://www.springframework.org/schema/security
+             http://www.springframework.org/schema/security/spring-security.xsd
+             http://code.alibabatech.com/schema/dubbo
+             http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
     <!--  引用 dubbo  服务  -->
     <!--在注册中心的名称-->
     <dubbo:application name="pinyougou-shop-web"/>
@@ -23,9 +24,11 @@ http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubb
     <http pattern="/img/**" security="none"/>
     <http pattern="/js/**" security="none"/>
     <http pattern="/plugins/**" security="none"/>
+    <http pattern="/seller/add.do" security="none"/>
     <http pattern="/register.html" security="none"/>
     <http pattern="/shoplogin.html" security="none"/>
-    <http pattern="/seller/add.do" security="none"/>
+
+
 
     <!--配置那些资源是需要什么权限才可以访问-->
     <!--如果use-expressions为false可以不使用hasRole('ROLE_USER')，直接写角色名称-->
@@ -51,16 +54,19 @@ http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubb
         <logout/>
     </http>
 
-    <!--认证管理器-->
+
+    <!--配置自定义认证-->
+    <beans:bean id="userDetailsServiceImpl" class="com.pinyougou.shop.service.impl.UserDetailsServiceImpl">
+        <beans:property name="sellerService" ref="sellerService"/>
+    </beans:bean>
+
+    <!--配置密码加密对象-->
+    <beans:bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+    <!--认证管理-->
     <authentication-manager>
-        <authentication-provider>
-            <user-service>
-                <!--拥有角色的用户名和密码-->
-                <user name="admin" password="123456"
-                      authorities="ROLE_USER"/>
-                <user name="itcast" password="123456"
-                      authorities="ROLE_USER"/>
-            </user-service>
+        <authentication-provider user-service-ref="userDetailsServiceImpl">
+            <password-encoder ref="bCryptPasswordEncoder"/>
         </authentication-provider>
     </authentication-manager>
 
