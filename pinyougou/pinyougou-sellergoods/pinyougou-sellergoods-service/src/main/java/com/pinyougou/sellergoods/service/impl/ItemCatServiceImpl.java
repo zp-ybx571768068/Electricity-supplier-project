@@ -35,4 +35,18 @@ public class ItemCatServiceImpl extends BaseServiceImpl<TbItemCat> implements It
 
         return new PageResult(pageInfo.getTotal(), pageInfo.getList());
     }
+
+    @Override
+    public void addItemCat(TbItemCat itemCat) {
+
+        Long parentId = itemCat.getId();
+        itemCat.setParentId(parentId);
+        itemCat.setId(null);
+
+        itemCatMapper.insertSelective(itemCat);
+
+        System.out.println(itemCat);
+    }
+
+
 }

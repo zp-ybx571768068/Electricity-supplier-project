@@ -8,6 +8,7 @@ import com.pinyougou.vo.Result;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/typeTemplate")
 @RestController
@@ -76,6 +77,11 @@ public class TypeTemplateController {
     public PageResult search(@RequestBody  TbTypeTemplate typeTemplate, @RequestParam(value = "page", defaultValue = "1")Integer page,
                                @RequestParam(value = "rows", defaultValue = "10")Integer rows) {
         return typeTemplateService.search(page, rows, typeTemplate);
+    }
+
+    @GetMapping("/selectOptionList")
+    public List<Map<String,Object>> selectOptionList(){
+        return typeTemplateService.selectOptionList();
     }
 
 }

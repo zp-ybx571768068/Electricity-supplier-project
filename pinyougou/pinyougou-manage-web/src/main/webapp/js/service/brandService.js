@@ -32,6 +32,5 @@ app.service("brandService",function ($http) {
     //查询品牌数据
     this.selectOptionList = function () {
         return $http.get("../brand/selectOptionList.do");
-
     };
 });

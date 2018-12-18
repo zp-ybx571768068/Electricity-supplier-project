@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
+import java.util.Map;
 
 @Service(interfaceClass = TypeTemplateService.class)
 public class TypeTemplateServiceImpl extends BaseServiceImpl<TbTypeTemplate> implements TypeTemplateService {
@@ -34,5 +35,11 @@ public class TypeTemplateServiceImpl extends BaseServiceImpl<TbTypeTemplate> imp
         PageInfo<TbTypeTemplate> pageInfo = new PageInfo<>(list);
 
         return new PageResult(pageInfo.getTotal(), pageInfo.getList());
+    }
+
+    @Override
+    public List<Map<String, Object>> selectOptionList() {
+
+        return typeTemplateMapper.selectOptionList();
     }
 }

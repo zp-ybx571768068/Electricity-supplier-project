@@ -1,4 +1,4 @@
-app.controller("itemCatController", function ($scope, $controller, itemCatService) {
+app.controller("itemCatController", function ($scope, $controller, itemCatService,typeTemplateService) {
 
     //加载baseController控制器并传入1个作用域，与angularJs运行时作用域相同.
     $controller("baseController",{$scope:$scope});
@@ -90,6 +90,29 @@ app.controller("itemCatController", function ($scope, $controller, itemCatServic
         }
 
         $scope.findByParentId(entity.id);
-    }
+    };
+
+    $scope.addItemCat = function (entity){
+
+        if ($scope.entity_2){
+            entity.id = $scope.entity_2.id;
+        }else if ($scope.entity_1) {
+            entity.id = $scope.entity_1.id;
+        }else {
+            entity.id = 0;
+        }
+
+
+        itemCatService.addItemCat(entity);
+
+    };
+
+    //查询类型模板列表
+    $scope.typeTemplateList={date:[]};//初始化
+    $scope.findtypeTemplateList = function(){
+        typeTemplateService.selectOptionList().success(function (response) {
+            $scope.typeTemplateList.data = response;
+        });
+    };
 
 });
