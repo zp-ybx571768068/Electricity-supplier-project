@@ -16,6 +16,10 @@ public class GoodsController {
     @Reference
     private GoodsService goodsService;
 
+    @GetMapping("/updateStatus")
+    public Result updateStatus(Long[] ids ,String status){
+        return  goodsService.updateStatus(ids,status);
+    }
     @RequestMapping("/findAll")
     public List<TbGoods> findAll() {
         return goodsService.findAll();
@@ -57,7 +61,7 @@ public class GoodsController {
     @GetMapping("/delete")
     public Result delete(Long[] ids) {
         try {
-            goodsService.deleteById(ids);
+            goodsService.deleteGoodsByIds(ids);
             return Result.success("删除成功");
         } catch (Exception e) {
             e.printStackTrace();

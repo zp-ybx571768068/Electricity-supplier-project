@@ -11,7 +11,9 @@ public interface ItemCatService extends BaseService<TbItemCat> {
 
     PageResult search(Integer page, Integer rows, TbItemCat itemCat);
 
-    void addItemCat(TbItemCat itemCat);
+    void addItemCat(TbItemCat itemCat,Long parentId);
+
+    void deleteByItemCatIds(Long[] ids);
 
 
 

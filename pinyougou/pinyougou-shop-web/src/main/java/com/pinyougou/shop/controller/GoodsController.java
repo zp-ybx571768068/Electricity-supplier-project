@@ -18,6 +18,17 @@ public class GoodsController {
     @Reference
     private GoodsService goodsService;
 
+    /**
+     *  商品上下架功能
+     * @param ids
+     * @param marketable
+     * @return
+     */
+    @PostMapping("/isPutAway")
+    public Result isPutAway(Long[] ids ,String marketable){
+       return goodsService.isPutAway(ids,marketable);
+    }
+
     @RequestMapping("/findAll")
     public List<TbGoods> findAll() {
         return goodsService.findAll();
@@ -46,19 +57,43 @@ public class GoodsController {
     }
 
     @GetMapping("/findOne")
-    public TbGoods findOne(Long id) {
-        return goodsService.findOne(id);
+    public Goods findOne(Long id) {
+        return goodsService.findGoodsById(id);
     }
 
     @PostMapping("/update")
-    public Result update(@RequestBody TbGoods goods) {
+    public Result update(@RequestBody Goods goods) {
         try {
-            goodsService.update(goods);
+            //校验商家
+            TbGoods tbGoods = goodsService.findOne(goods.getGoods().getId());
+            String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+            if (!sellerId.equals(tbGoods.getSellerId()) || !sellerId.equals(goods.getGoods().getSellerId())){
+                return Result.error("操作违法");
+            }
+            goodsService.updateGoods(goods);
             return Result.success("修改成功");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return Result.error("修改失败");
+    }
+
+    /**
+     * 提交审核
+     * @param ids
+     * @param status
+     * @return
+     */
+    @GetMapping("submitAudit")
+    public Result submitAudit(Long[] ids,String status){
+        try {
+            goodsService.submitAudit(ids,status);
+
+            return Result.success("更新成功");
+        }catch (Exception e){
+         e.printStackTrace();
+        }
+        return Result.error("更新失败");
     }
 
     @GetMapping("/delete")
@@ -82,6 +117,8 @@ public class GoodsController {
     @PostMapping("/search")
     public PageResult search(@RequestBody  TbGoods goods, @RequestParam(value = "page", defaultValue = "1")Integer page,
                                @RequestParam(value = "rows", defaultValue = "10")Integer rows) {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        goods.setSellerId(name);
         return goodsService.search(page, rows, goods);
     }
 

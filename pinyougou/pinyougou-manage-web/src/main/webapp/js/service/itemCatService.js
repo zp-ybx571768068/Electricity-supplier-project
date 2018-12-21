@@ -34,7 +34,7 @@ app.service("itemCatService",function ($http) {
         return $http.get("../itemCat/findByParentId.do?parentId=" + parentId);
     };
 
-    this.addItemCat = function (entity) {
-        return $http.post("../itemCat/add.do",entity);
+    this.addItemCat = function (entity,parentId) {
+        return $http.post("../itemCat/add.do?parentId="+parentId,entity);
     }
 });

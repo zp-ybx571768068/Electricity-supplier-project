@@ -42,7 +42,7 @@ public class ItemCatController {
     @PostMapping("/add")
     public Result add(@RequestBody TbItemCat itemCat) {
         try {
-            itemCatService.addItemCat(itemCat);
+            itemCatService.add(itemCat);
             return Result.success("增加成功");
         } catch (Exception e) {
             e.printStackTrace();

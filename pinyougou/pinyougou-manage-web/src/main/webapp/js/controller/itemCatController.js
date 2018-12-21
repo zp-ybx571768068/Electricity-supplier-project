@@ -22,7 +22,7 @@ app.controller("itemCatController", function ($scope, $controller, itemCatServic
         if($scope.entity.id != null){//更新
             object = itemCatService.update($scope.entity);
         } else {//新增
-            object = itemCatService.add($scope.entity);
+           // object = itemCatService.add($scope.entity);
         }
         object.success(function (response) {
             if(response.success){
@@ -39,23 +39,6 @@ app.controller("itemCatController", function ($scope, $controller, itemCatServic
         });
     };
 
-    $scope.delete = function () {
-        if($scope.selectedIds.length < 1){
-            alert("请先选择要删除的记录");
-            return;
-        }
-        if(confirm("确定要删除已选择的记录吗")){
-            itemCatService.delete($scope.selectedIds).success(function (response) {
-                if(response.success){
-                    $scope.reloadList();
-                    $scope.selectedIds = [];
-                } else {
-                    alert(response.message);
-                }
-            });
-        }
-    };
-
     $scope.searchEntity = {};//初始为空
     $scope.search = function (page, rows) {
         itemCatService.search(page, rows, $scope.searchEntity).success(function (response) {
@@ -64,12 +47,31 @@ app.controller("itemCatController", function ($scope, $controller, itemCatServic
         });
 
     };
-
+    //定义一个parentId
+    $scope.parentId = undefined;
     //根据父分类id查询其子分类
     $scope.findByParentId = function (parentId) {
         itemCatService.findByParentId(parentId).success(function (response) {
+            $scope.parentId = parentId;
             $scope.list = response;
         });
+    };
+
+    $scope.delete = function () {
+        if($scope.selectedIds.length < 1){
+            alert("请先选择要删除的记录");
+            return;
+        }
+        if(confirm("确定要删除已选择的记录吗")){
+            itemCatService.delete($scope.selectedIds).success(function (response) {
+                if(response.success){
+                    $scope.findByParentId($scope.parentId);
+                    $scope.selectedIds = [];
+                } else {
+                    alert(response.message);
+                }
+            });
+        }
     };
 
     $scope.grade = 1;//默认1级
@@ -94,17 +96,17 @@ app.controller("itemCatController", function ($scope, $controller, itemCatServic
 
     $scope.addItemCat = function (entity){
 
-        if ($scope.entity_2){
+       /* if ($scope.entity_2){
             entity.id = $scope.entity_2.id;
         }else if ($scope.entity_1) {
             entity.id = $scope.entity_1.id;
         }else {
             entity.id = 0;
-        }
+        }*/
 
-
-        itemCatService.addItemCat(entity);
-
+        itemCatService.addItemCat(entity,$scope.parentId).success(function () {
+            $scope.findByParentId($scope.parentId);
+        });
     };
 
     //查询类型模板列表

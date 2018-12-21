@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service(interfaceClass = ItemCatService.class)
@@ -37,15 +38,16 @@ public class ItemCatServiceImpl extends BaseServiceImpl<TbItemCat> implements It
     }
 
     @Override
-    public void addItemCat(TbItemCat itemCat) {
-
-        Long parentId = itemCat.getId();
+    public void addItemCat(TbItemCat itemCat , Long parentId) {
         itemCat.setParentId(parentId);
-        itemCat.setId(null);
-
         itemCatMapper.insertSelective(itemCat);
+    }
 
-        System.out.println(itemCat);
+    @Override
+    public void deleteByItemCatIds(Long[] ids) {
+        Example example = new Example(TbItemCat.class);
+        example.createCriteria().andIn("id",Arrays.asList(ids));
+        itemCatMapper.deleteByExample(example);
     }
 
 
