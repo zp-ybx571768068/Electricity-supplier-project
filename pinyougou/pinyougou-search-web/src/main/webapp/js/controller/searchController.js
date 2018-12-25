@@ -1,7 +1,15 @@
-app.controller("searchController", function ($scope, searchService) {
+app.controller("searchController", function ($scope,$location,searchService) {
+
+
+
+    //搜索条件对象
+    $scope.searchMap = {"keywords":"","category":"","brand":"","spec":{},"price":"","pageNo":1,"pageSize":20,"sortField":"","sort":""};
 
     //搜索
     $scope.search = function () {
+        if ($scope.searchMap.keywords == undefined){
+            $scope.searchMap.keywords = "";
+        }
         searchService.search($scope.searchMap).success(function (response) {
             $scope.resultMap = response;
             //构建页面分页导航条信息
@@ -9,9 +17,12 @@ app.controller("searchController", function ($scope, searchService) {
         });
     };
 
-    //搜索条件对象
-    $scope.searchMap = {"keywords":"","category":"","brand":"","spec":{},"price":"","pageNo":1,"pageSize":40};
+    //加载搜索关键字
+    $scope.loadKeywords = function(){
 
+   $scope.searchMap.keywords = $location.search()["keywords"];
+        $scope.search();
+    };
     //过滤查询
     $scope.addSearchItem = function(key,value){
         if ("brand" == key || "category" == key || "price" == key){
@@ -91,7 +102,6 @@ app.controller("searchController", function ($scope, searchService) {
         for (var i = startPageNo;i <= endPageNo;i++){
             $scope.pageNoList.push(i);
         }
-        alert($scope.pageNoList)
     };
 
     //判断是否为当前页
@@ -106,6 +116,13 @@ app.controller("searchController", function ($scope, searchService) {
             $scope.searchMap.pageNo = pageNo;
             $scope.search();
         }
-    }
+    };
+
+    //排序搜索
+    $scope.sortSearch = function (sortField, sort) {
+        $scope.searchMap.sortField = sortField;
+        $scope.searchMap.sort = sort;
+        $scope.search();
+    };
 
 });

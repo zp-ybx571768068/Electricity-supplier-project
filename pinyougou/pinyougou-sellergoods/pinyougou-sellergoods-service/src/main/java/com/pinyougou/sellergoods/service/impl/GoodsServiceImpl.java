@@ -211,6 +211,11 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
         return Result.error(message+"失败");
     }
 
+    /**
+     *  提交审核
+     * @param ids
+     * @param status
+     */
     @Override
     public void submitAudit(Long[] ids, String status) {
         TbGoods goods =new TbGoods();
@@ -230,6 +235,19 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
             itemMapper.updateByExampleSelective(item, itemExample);
         }
 }
+
+    /**
+     *  根据SPU id集合和状态查询这些商品对应的sku列表
+     * @param ids
+     * @param status
+     * @return
+     */
+    @Override
+    public List<TbItem> findItemListByGoodsIdsAndStatus(Long[] ids, String status) {
+        Example example = new Example(TbItem.class);
+        example.createCriteria().andEqualTo("status",status).andIn("goodsId",Arrays.asList(ids));
+        return itemMapper.selectByExample(example);
+    }
 
 
     /**

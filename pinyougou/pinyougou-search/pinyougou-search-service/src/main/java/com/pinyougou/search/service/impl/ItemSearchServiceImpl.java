@@ -2,10 +2,12 @@ package com.pinyougou.search.service.impl;
 
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
 import com.ctc.wstx.util.StringUtil;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.search.service.ItemSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.HighlightEntry;
@@ -37,18 +39,21 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         Map<String, Object> requestMap = new HashMap<>();
 
 
+        Criteria criteria ;
         //处理搜索关键字中的空格问题
         if (!StringUtils.isEmpty(searchMap.get("keywords").toString())) {
             searchMap.put("keywords",searchMap.get("keywords").toString().replaceAll(" ",""));
+            //设置查询条件
+           criteria =  new Criteria("item_keywords").is(searchMap.get("keywords"));
+        }else {
+           criteria = new Criteria("item_keywords");
         }
-
-
         //创建高亮搜索对象
         SimpleHighlightQuery query = new SimpleHighlightQuery();
 
-        //设置查询条件
-        Criteria criteria = new Criteria("item_keywords").is(searchMap.get("keywords"));
         query.addCriteria(criteria);
+
+
 
         //按照分类过滤
         if (!StringUtils.isEmpty(searchMap.get("category").toString())) {
@@ -113,6 +118,14 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             highlightOptions.setSimplePostfix("</em>");
             query.setHighlightOptions(highlightOptions);
 
+            //设置排序
+            if (!StringUtils.isEmpty(searchMap.get("sortField").toString()) && !StringUtils.isEmpty(searchMap.get("sort").toString())){
+                String sortOrder = searchMap.get("sort").toString();
+                Sort sort = new Sort("DESC".equals(searchMap.get("sort").toString()) ? Sort.Direction.DESC : Sort.Direction.ASC,
+                        "item_"+searchMap.get("sortField").toString());
+                query.addSort(sort);
+            }
+
             //查询
             HighlightPage<TbItem> itemHighlightPage = solrTemplate.queryForHighlightPage(query, TbItem.class);
 
@@ -139,5 +152,32 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
             return requestMap;
         }
+
+    /**
+     * 批量导入商品到solr索引库中
+     *
+     * @param itemList 商品列表
+     */
+    @Override
+    public void importItemList(List<TbItem> itemList) {
+        for (TbItem item : itemList){
+            Map specMap = JSON.parseObject(item.getSpec(), Map.class);
+            item.setSpecMap(specMap);
+        }
+        solrTemplate.saveBeans(itemList);
+        solrTemplate.commit();
     }
+
+    /**
+     *  根据goodsid集合删除对应其在solr中的数据
+     * @param goodsIdList
+     */
+    @Override
+    public void deleteItemByGoodsIdList(List<Long> goodsIdList) {
+        Criteria criteria = new Criteria("item_goodsid").in(goodsIdList);
+        SimpleQuery query = new SimpleQuery(criteria);
+        solrTemplate.delete(query);
+        solrTemplate.commit();
+    }
+}
 

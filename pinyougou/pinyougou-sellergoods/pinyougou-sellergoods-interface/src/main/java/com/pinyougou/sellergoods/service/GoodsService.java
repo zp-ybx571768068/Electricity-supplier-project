@@ -1,10 +1,13 @@
 package com.pinyougou.sellergoods.service;
 
 import com.pinyougou.pojo.TbGoods;
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.service.BaseService;
 import com.pinyougou.vo.Goods;
 import com.pinyougou.vo.PageResult;
 import com.pinyougou.vo.Result;
+
+import java.util.List;
 
 public interface GoodsService extends BaseService<TbGoods> {
 
@@ -23,4 +26,12 @@ public interface GoodsService extends BaseService<TbGoods> {
     Result isPutAway(Long[] ids, String marketable);
 
     void submitAudit(Long[] ids, String status);
+
+    /**
+     *  根据SPU id集合和状态查询这些商品对应的sku列表
+     * @param ids
+     * @param status
+     * @return
+     */
+    List<TbItem> findItemListByGoodsIdsAndStatus(Long[] ids, String status);
 }

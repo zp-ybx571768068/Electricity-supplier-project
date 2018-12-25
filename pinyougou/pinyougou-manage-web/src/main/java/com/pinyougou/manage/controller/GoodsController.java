@@ -2,11 +2,14 @@ package com.pinyougou.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.TbGoods;
+import com.pinyougou.pojo.TbItem;
+import com.pinyougou.search.service.ItemSearchService;
 import com.pinyougou.sellergoods.service.GoodsService;
 import com.pinyougou.vo.PageResult;
 import com.pinyougou.vo.Result;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RequestMapping("/goods")
@@ -15,10 +18,20 @@ public class GoodsController {
 
     @Reference
     private GoodsService goodsService;
+    @Reference
+    private ItemSearchService itemSearchService;
 
     @GetMapping("/updateStatus")
     public Result updateStatus(Long[] ids ,String status){
-        return  goodsService.updateStatus(ids,status);
+
+        Result result = goodsService.updateStatus(ids, status);
+        //如果审核通过商品才更新solr索引库
+        if ("2".equals(status)){
+           //查询需要更新的列表
+           List<TbItem> itemList = goodsService.findItemListByGoodsIdsAndStatus(ids,"1");
+            itemSearchService.importItemList(itemList);
+        }
+        return result;
     }
     @RequestMapping("/findAll")
     public List<TbGoods> findAll() {
@@ -62,6 +75,8 @@ public class GoodsController {
     public Result delete(Long[] ids) {
         try {
             goodsService.deleteGoodsByIds(ids);
+            //删除solr中对应的商品数据
+            itemSearchService.deleteItemByGoodsIdList(Arrays.asList(ids));
             return Result.success("删除成功");
         } catch (Exception e) {
             e.printStackTrace();
