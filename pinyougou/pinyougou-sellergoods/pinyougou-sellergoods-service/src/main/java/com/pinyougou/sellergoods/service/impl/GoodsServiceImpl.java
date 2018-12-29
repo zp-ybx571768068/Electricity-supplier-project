@@ -23,6 +23,9 @@ import tk.mybatis.mapper.weekend.Weekend;
 import javax.lang.model.element.NestingKind;
 import java.util.*;
 
+/**
+ * @author zp
+ */
 @Transactional
 @Service(interfaceClass = GoodsService.class)
 public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsService {
@@ -70,13 +73,6 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
 
     @Override
     public void addGoods(Goods goods) {
-       /* //新增商品基本信息
-        goodsMapper.insertSelective(goods.getGoods());
-
-        //新增商品描述信息
-        goods.getGoodsDesc().setGoodsId(goods.getGoods().getId());
-        goodsDescMapper.insertSelective(goods.getGoodsDesc());*/
-
        //保存商品基本信息
         add(goods.getGoods());
         //保存商品描述信息
@@ -89,21 +85,7 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
 
     @Override
     public Goods findGoodsById(Long id) {
-        Goods goods = new Goods();
-        //查询商品spu
-        TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
-        goods.setGoods(tbGoods);
-
-        //查询商品描述
-        TbGoodsDesc tbGoodsDesc = goodsDescMapper.selectByPrimaryKey(id);
-        goods.setGoodsDesc(tbGoodsDesc);
-
-        //查询商品sku
-        Example example = new Example(TbItem.class);
-        example.createCriteria().andEqualTo("goodsId",id);
-        List<TbItem> items = itemMapper.selectByExample(example);
-        goods.setItemList(items);
-        return goods;
+        return findGoodsByIdAndStatus(id,null);
     }
 
     @Override
@@ -247,6 +229,34 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
         Example example = new Example(TbItem.class);
         example.createCriteria().andEqualTo("status",status).andIn("goodsId",Arrays.asList(ids));
         return itemMapper.selectByExample(example);
+    }
+
+    @Override
+    public Goods findGoodsByIdAndStatus(Long goodsId, String status) {
+
+        Goods goods = new Goods();
+        //查询商品spu
+        TbGoods tbGoods = goodsMapper.selectByPrimaryKey(goodsId);
+        goods.setGoods(tbGoods);
+
+        //查询商品描述
+        TbGoodsDesc tbGoodsDesc = goodsDescMapper.selectByPrimaryKey(goodsId);
+        goods.setGoodsDesc(tbGoodsDesc);
+
+
+        //查询商品sku
+        Example example = new Example(TbItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("goodsId",goodsId);
+        if (!StringUtils.isEmpty(status)){
+            criteria.andEqualTo("status",status);
+        }
+        //按照是否默认值降序排序
+        example.orderBy("isDefault").desc();
+
+        List<TbItem> items = itemMapper.selectByExample(example);
+        goods.setItemList(items);
+        return goods;
     }
 
 
