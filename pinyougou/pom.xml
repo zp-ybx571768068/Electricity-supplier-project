@@ -22,6 +22,11 @@
         <module>pinyougou-search-web</module>
         <module>pinyougou-item-web</module>
         <module>../itcast-activemq</module>
+        <module>pinyougou-user</module>
+        <module>pinyougou-user-web</module>
+        <module>pinyougou-cart</module>
+        <module>pinyougou-cart-web</module>
+        <module>pinyougou-order</module>
     </modules>
 
     <!-- 集中定义依赖版本号 -->
@@ -333,14 +338,6 @@
                 <groupId>xml-apis</groupId>
                 <artifactId>xml-apis</artifactId>
                 <version>${xml.apis.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-web</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
             </dependency>
         </dependencies>
     </dependencyManagement>

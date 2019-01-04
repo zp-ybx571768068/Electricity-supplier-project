@@ -1,4 +1,4 @@
-package util;
+package com.pinyougou.common.util;
 
 
 import org.csource.fastdfs.*;
