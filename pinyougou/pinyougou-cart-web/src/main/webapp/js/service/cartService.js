@@ -1,4 +1,10 @@
 app.service("cartService",function ($http) {
+
+    //提交订单
+    this.submitOrder = function (order) {
+        return $http.post("../order/add.do", order);
+    };
+
     //计算购买总数和总价格
     this.sumTotalValue = function (cartList) {
       var totalValue = {"totalNum":0,"totalMoney":0.0};

@@ -25,6 +25,9 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    /**
+     *  在redis中购物车数据的key
+     */
     private static final String REDIS_CART_LIST = "CART_LIST";
     /**
      * 1、验证商品是否存在，商品的启用状态是否启用
